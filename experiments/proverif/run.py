@@ -16,6 +16,12 @@ def parse_results(output):
     for line in output.splitlines():
         if not line.startswith('RESULT '):
             continue
+        # ProVerif 2.05 supplements injective results with parenthesized notes
+        # about a weaker non-injective query. They are not separate results.
+        # In particular, a TRUE weaker query must never replace an unresolved
+        # injective query. Standalone query lines remain authoritative.
+        if re.match(r'^RESULT \((?:but|even) ', line):
+            continue
         if re.search(r' is true\.?$', line):
             value = True
         elif re.search(r' is false\.?$', line):
@@ -114,6 +120,8 @@ def main():
         print(model.name+': '+result['status'],flush=True)
         for line in output.splitlines():
             if line.startswith('RESULT '):print('  '+line,flush=True)
+        if parse_error:
+            print('  Result parsing error: '+parse_error,flush=True)
         if not parsed:
             print('  No recognized query result. Read '+str(args.output/log_name),flush=True)
             # Display the initial diagnostic, so users need not locate a log

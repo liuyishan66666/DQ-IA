@@ -3,8 +3,8 @@
 本目录提供 DQ-IA 第 5 节的符号模型和运行器，针对用户已有的 ProVerif 2.05。
 它与已经完成的真实密码协议测试、网络仿真分别报告。
 
-**当前状态：模型和结果核对器已准备，尚无真实 ProVerif 运行结论。** 云环境没有 ProVerif，官方下载请求返回代理 403，不能在云端安装并验证语法或性质。
-用户 Ubuntu 已确认存在 `/home/liuyishan/.opam/default/bin/proverif`、版本 2.05，可按以下步骤实际运行。预期表不是工具结果。
+**当前状态：用户已在 ProVerif 2.05 得到实际查询结果，但部分有限状态单射查询无法证明，验证尚未全部完成。** 见 [阶段性结果与未解决事项](PROGRESS.md)。
+云环境没有 ProVerif，官方下载请求返回代理 403，无法独立在云端运行。用户 Ubuntu 存在 `/home/liuyishan/.opam/default/bin/proverif`、版本 2.05；下面的预期表不是实测结果。
 
 ## 在 Ubuntu 上运行
 
@@ -104,5 +104,5 @@ python3 -m experiments.proverif.generate
 python3 -m unittest discover -s tests/proverif -v
 ```
 
-核对器的 6 项单元测试只验证 TRUE/FALSE/未知/缺失等输出的处理，**不代表 ProVerif 已执行或模型已通过语法检查**。
+核对器的 9 项单元测试只验证 TRUE/FALSE/未知/缺失及 ProVerif 2.05 补充说明行等输出的处理，**这些单元测试本身不代表 ProVerif 已执行或任何安全性质成立**。
 不要把 `manifest.json` 的 `expected` 列当作实测结果；真实结论只来自 ProVerif 输出的 RESULT 行，且应结合模型范围和攻击轨迹解释。
