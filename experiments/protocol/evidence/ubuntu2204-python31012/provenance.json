@@ -1,0 +1,11 @@
+{
+  "source": "User-supplied pasted terminal output; no direct access to the virtual machine",
+  "attachment_sha256": "b965a14e21c255f21d21c3334e6b683c3a42ba4594e6b830f84cf0890ea72bc4",
+  "processing": "Extracted JSON object and test log; normalized line endings, removed terminal prompts; no test results changed",
+  "checks": {
+    "source_hashes_match_repository": true,
+    "json_and_log_test_names_match": true,
+    "all_33_tests_passed_without_skips": true
+  },
+  "ubuntu_release": "22.04.5 LTS, user-reported earlier; JSON records Linux/glibc/Python, not os-release"
+}

@@ -5,6 +5,8 @@
 目标环境：Ubuntu 22.04 LTS、x86_64、Python 3.10。无需重装系统或升级到 Python 3.12；无需 QEMU、GPU、ProVerif 或 root 权限运行实验。
 依赖 `pqcrypto==0.4.0` 提供 ML-KEM 实现，`cryptography==46.0.3` 提供 AEAD；不使用模拟 KEM，也不关闭 TLS/校验检查。
 
+已收到并核对用户在 Ubuntu 22.04.5 / Python 3.10.12 下的运行记录：33 项测试全部通过，5 个源码摘要一致。详见 [实验结果与论文表述](RESULTS.md) 和 [验证记录](evidence/README.md)。
+
 ## 在 Ubuntu 虚拟机执行
 
 在仓库目录先检查本地状态：
