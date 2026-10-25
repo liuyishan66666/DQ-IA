@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "runs_checked": 432,
+  "command_records_checked": 2581194,
+  "hashed_files": 1028,
+  "checks": [
+    "shared arrival manifests and command IDs",
+    "FCFS decisions and contact feasibility",
+    "predictive expiry and arrival deadlines",
+    "delivery/expiry conservation",
+    "24-hour reception counts and payload throughput",
+    "complete queue traces and empty drained queues"
+  ],
+  "raw_evidence_unchanged_after_report_regeneration": true
+}

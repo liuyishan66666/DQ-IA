@@ -1,0 +1,17 @@
+test_bursts_retain_backlog_and_have_twenty_batches (test_chapter6.Chapter6Tests.test_bursts_retain_backlog_and_have_twenty_batches) ... ok
+test_contact_finish_boundary (test_chapter6.Chapter6Tests.test_contact_finish_boundary) ... ok
+test_deadline_equality_and_one_ns_late (test_chapter6.Chapter6Tests.test_deadline_equality_and_one_ns_late) ... ok
+test_drain_and_observation_are_distinct (test_chapter6.Chapter6Tests.test_drain_and_observation_are_distinct) ... ok
+test_fcfs_against_independent_tick_reference (test_chapter6.Chapter6Tests.test_fcfs_against_independent_tick_reference) ... ok
+test_future_feasibility_drop_consumes_no_service (test_chapter6.Chapter6Tests.test_future_feasibility_drop_consumes_no_service) ... ok
+test_observation_excludes_exact_24h (test_chapter6.Chapter6Tests.test_observation_excludes_exact_24h) ... ok
+test_poisson_reproducibility (test_chapter6.Chapter6Tests.test_poisson_reproducibility) ... ok
+test_queues_exclude_in_service (test_chapter6.Chapter6Tests.test_queues_exclude_in_service) ... ok
+test_receive_can_be_outside_ground_contact (test_chapter6.Chapter6Tests.test_receive_can_be_outside_ground_contact) ... ok
+test_saturated_capacity_without_deadline (test_chapter6.Chapter6Tests.test_saturated_capacity_without_deadline) ... ok
+test_single_180_batch (test_chapter6.Chapter6Tests.test_single_180_batch) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.029s
+
+OK

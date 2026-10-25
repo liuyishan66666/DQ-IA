@@ -1,0 +1,4 @@
+scheme,bundle_bytes,security_overhead_bytes,transmission_s,full_window_capacity,payload_bytes_per_full_window,ideal_period_capacity_per_hour
+B,4485,4453,17.94,150,4800,120.0
+C,1208,1176,4.832,558,17856,446.4
+D,104,72,0.416,6490,207680,5192.0

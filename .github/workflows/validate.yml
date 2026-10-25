@@ -1,0 +1,48 @@
+name: Validate chapter 6 experiments
+
+on:
+  push:
+    branches: [main, 'experiments/**', 'feat/**', 'fix/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run model and boundary tests
+        run: python -m unittest discover -s tests -v
+
+  evidence-audit:
+    name: Audit all saved experiment records
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify evidence checksums
+        run: |
+          python - <<'PY'
+          import csv, hashlib
+          from pathlib import Path
+          root = Path('experiments/chapter6/results')
+          with (root / 'audit_manifest_sha256.csv').open() as stream:
+              for row in csv.DictReader(stream):
+                  assert hashlib.sha256((root / row['file']).read_bytes()).hexdigest() == row['sha256'], row['file']
+          PY
+      - name: Audit 432 runs against raw records
+        run: python -m experiments.chapter6.audit experiments/chapter6/results

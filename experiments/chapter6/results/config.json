@@ -1,0 +1,77 @@
+{
+  "bandwidth_bps": 2000,
+  "contact_ns": 2700000000000,
+  "gap_ns": 1800000000000,
+  "propagation_ns": 780000000000,
+  "deadline_ns": 5400000000000,
+  "observation_ns": 86400000000000,
+  "payload_bytes": 32,
+  "sizes_bytes": {
+    "B": 4485,
+    "C": 1208,
+    "D": 104
+  },
+  "rates_per_hour": [
+    30,
+    60,
+    120,
+    180,
+    300,
+    450,
+    600
+  ],
+  "burst_batches": [
+    100,
+    180,
+    300,
+    600
+  ],
+  "seeds": [
+    2026102501,
+    2026102502,
+    2026102503,
+    2026102504,
+    2026102505,
+    2026102506,
+    2026102507,
+    2026102508,
+    2026102509,
+    2026102510,
+    2026102511,
+    2026102512,
+    2026102513,
+    2026102514,
+    2026102515,
+    2026102516,
+    2026102517,
+    2026102518,
+    2026102519,
+    2026102520
+  ],
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "time_unit": "integer nanoseconds",
+  "observation_interval": "[0, 86400 seconds)",
+  "queue_policy": "FCFS, predictive head expiry, nonpreemptive, no segmentation",
+  "random_generator": "Python random.Random(seed).expovariate(rate/3600)",
+  "arrival_rounding": "round absolute seconds to integer nanoseconds",
+  "confidence_interval": "two-sided Student t, df=19, across seed metrics",
+  "source_document": "DQIA_chapter6_revised.pdf",
+  "source_pdf_sha256": "7e5fcfffb73f066b7f8add5e1185b0e2cda267edb64748d63a3edc0c017ce83f",
+  "assumptions": [
+    "H=40 bytes is assumed, not measured BPSec encoding",
+    "No bit errors, retransmissions, crypto cost, or buffer limit"
+  ],
+  "code_sha256": {
+    "report.py": "27b8281cb9d1b5c084c9d0753d7909343cda1b3ddcb0b7842a1cdd37771c109f",
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit.py": "6ff889a596e73af18728c1df508dde77a6eec35f854bef61d7222b8fa0cc334c",
+    "run.py": "d7185c1f159f4220f67702eec41c0e23ef77b348d67e0d6b6c9b36df75c5b971",
+    "simulation.py": "240ac346b926cc051d7dc5ac965cc8824f4f926b2f91bc74a6ce69589561af07"
+  },
+  "analysis_versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8"
+  }
+}

@@ -1,0 +1,14 @@
+__pycache__/
+.venv/
+*.py[cod]
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.pytest_cache/
+.mpl-cache/
+.env
+.env.*
+!.env.example
+experiments/chapter6/results_local*/
+experiments/chapter6/results_rerun*/
