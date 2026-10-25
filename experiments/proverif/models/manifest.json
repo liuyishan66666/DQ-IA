@@ -1,0 +1,56 @@
+[
+  {
+    "model": "bounded_secure.pv",
+    "expected": {
+      "secrecy": true,
+      "authentication": true,
+      "injective_authentication": true,
+      "acceptance_unreachable": false,
+      "both_acceptances_unreachable": false
+    },
+    "scope": "2 symbolic sequence slots, 3 sequential reception attempts"
+  },
+  {
+    "model": "bounded_no_replay.pv",
+    "expected": {
+      "secrecy": true,
+      "authentication": true,
+      "injective_authentication": false,
+      "acceptance_unreachable": false,
+      "both_acceptances_unreachable": false
+    },
+    "scope": "2 symbolic sequence slots, 3 sequential reception attempts"
+  },
+  {
+    "model": "bounded_root_leak.pv",
+    "expected": {
+      "secrecy": true,
+      "authentication": false,
+      "injective_authentication": false,
+      "acceptance_unreachable": false,
+      "both_acceptances_unreachable": false
+    },
+    "scope": "2 symbolic sequence slots, 3 sequential reception attempts"
+  },
+  {
+    "model": "bounded_kem_key_leak.pv",
+    "expected": {
+      "secrecy": false,
+      "authentication": true,
+      "injective_authentication": true,
+      "acceptance_unreachable": false,
+      "both_acceptances_unreachable": false
+    },
+    "scope": "2 symbolic sequence slots, 3 sequential reception attempts"
+  },
+  {
+    "model": "unbounded_core.pv",
+    "expected": {
+      "secrecy": true,
+      "authentication": true,
+      "injective_authentication": false,
+      "acceptance_unreachable": false
+    },
+    "scope": "unbounded sessions, NO replay state"
+  }
+]

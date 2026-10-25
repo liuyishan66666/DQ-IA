@@ -1,0 +1,112 @@
+(* DQ-IA chapter 5, ideal symbolic primitives, fixed trusted context/epoch.
+   See README.md for assumptions and the bounded replay-state abstraction. *)
+type skey.
+type pkey.
+type coins.
+type flag.
+free net: channel.
+free ctx, epoch, seq0, seq1, zeroSalt, forgedCommand: bitstring.
+free attackerCoins: coins.
+free no, yes: flag.
+free secretCommand: bitstring [private].
+
+fun pk(skey): pkey.
+fun kemct(pkey, coins): bitstring.
+fun kemss(pkey, coins): bitstring.
+reduc forall sk: skey, z: coins;
+  decap(kemct(pk(sk),z),sk) = kemss(pk(sk),z).
+
+(* Extract/Expand are one-way ideal constructors. No numerical security claim. *)
+fun extract(bitstring,bitstring): bitstring.
+fun expand(bitstring,bitstring): bitstring.
+fun sessionInfo(bitstring,pkey,bitstring,bitstring,bitstring): bitstring.
+fun macInfo(bitstring,bitstring,bitstring): bitstring.
+fun nonce(bitstring,bitstring): bitstring.
+fun ad(bitstring,bitstring,bitstring,bitstring,bitstring): bitstring.
+fun command(bitstring,bitstring,bitstring,bitstring,bitstring,bitstring): bitstring.
+fun mac(bitstring,bitstring): bitstring.
+fun aenc(bitstring,bitstring,bitstring,bitstring): bitstring.
+reduc forall m:bitstring,k:bitstring,n:bitstring,a:bitstring;
+  adec(aenc(m,k,n,a),k,n,a) = m.
+
+event sent(bitstring,bitstring,bitstring,bitstring).
+event accepted(bitstring,bitstring,bitstring,bitstring).
+event accepted_any().
+event accepted_both().
+
+query attacker(secretCommand).
+query c:bitstring,e:bitstring,s:bitstring,m:bitstring;
+  event(accepted(c,e,s,m)) ==> event(sent(c,e,s,m)).
+query c:bitstring,e:bitstring,s:bitstring,m:bitstring;
+  inj-event(accepted(c,e,s,m)) ==> inj-event(sent(c,e,s,m)).
+(* FALSE is the desired reachability result: acceptance is NOT unreachable. *)
+query event(accepted_any()).
+query event(accepted_both()).
+
+let Send(pub:pkey,root:bitstring,s:bitstring) =
+  new z:coins;
+  new r:bitstring;
+  let ct = kemct(pub,z) in
+  let ss = kemss(pub,z) in
+  let ks = expand(extract(r,ss),sessionInfo(ctx,pub,ct,epoch,s)) in
+  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  let ciphertext = aenc(secretCommand,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
+  let tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) in
+  event sent(ctx,epoch,s,secretCommand);
+  out(net,(r,ct,epoch,s,ciphertext,tag)).
+let Receive0(sk:skey,root:bitstring,b0:flag,b1:flag) = 0.
+
+let Receive1(sk:skey,root:bitstring,b0:flag,b1:flag) =
+
+  in(net,wire:bitstring);
+  let (r:bitstring,ct:bitstring,=epoch,s:bitstring,ciphertext:bitstring,tag:bitstring) = wire in
+  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  if tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) then
+    (let ss = decap(ct,sk) in
+     (let ks = expand(extract(r,ss),sessionInfo(ctx,pk(sk),ct,epoch,s)) in
+     (let m = adec(ciphertext,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
+       (if s=seq0 then (if b0=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b1=yes then (event accepted_both(); Receive0(sk,root,yes,b1)) else Receive0(sk,root,yes,b1)) else Receive0(sk,root,b0,b1)) else if s=seq1 then (if b1=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b0=yes then (event accepted_both(); Receive0(sk,root,b0,yes)) else Receive0(sk,root,b0,yes)) else Receive0(sk,root,b0,b1)) else Receive0(sk,root,b0,b1))
+     else (Receive0(sk,root,b0,b1))))
+     else (Receive0(sk,root,b0,b1)))
+  else (Receive0(sk,root,b0,b1))
+  else (Receive0(sk,root,b0,b1))
+.
+
+let Receive2(sk:skey,root:bitstring,b0:flag,b1:flag) =
+
+  in(net,wire:bitstring);
+  let (r:bitstring,ct:bitstring,=epoch,s:bitstring,ciphertext:bitstring,tag:bitstring) = wire in
+  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  if tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) then
+    (let ss = decap(ct,sk) in
+     (let ks = expand(extract(r,ss),sessionInfo(ctx,pk(sk),ct,epoch,s)) in
+     (let m = adec(ciphertext,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
+       (if s=seq0 then (if b0=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b1=yes then (event accepted_both(); Receive1(sk,root,yes,b1)) else Receive1(sk,root,yes,b1)) else Receive1(sk,root,b0,b1)) else if s=seq1 then (if b1=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b0=yes then (event accepted_both(); Receive1(sk,root,b0,yes)) else Receive1(sk,root,b0,yes)) else Receive1(sk,root,b0,b1)) else Receive1(sk,root,b0,b1))
+     else (Receive1(sk,root,b0,b1))))
+     else (Receive1(sk,root,b0,b1)))
+  else (Receive1(sk,root,b0,b1))
+  else (Receive1(sk,root,b0,b1))
+.
+
+let Receive3(sk:skey,root:bitstring,b0:flag,b1:flag) =
+
+  in(net,wire:bitstring);
+  let (r:bitstring,ct:bitstring,=epoch,s:bitstring,ciphertext:bitstring,tag:bitstring) = wire in
+  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  if tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) then
+    (let ss = decap(ct,sk) in
+     (let ks = expand(extract(r,ss),sessionInfo(ctx,pk(sk),ct,epoch,s)) in
+     (let m = adec(ciphertext,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
+       (if s=seq0 then (if b0=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b1=yes then (event accepted_both(); Receive2(sk,root,yes,b1)) else Receive2(sk,root,yes,b1)) else Receive2(sk,root,b0,b1)) else if s=seq1 then (if b1=no then (event accepted(ctx,epoch,s,m); event accepted_any(); if b0=yes then (event accepted_both(); Receive2(sk,root,b0,yes)) else Receive2(sk,root,b0,yes)) else Receive2(sk,root,b0,b1)) else Receive2(sk,root,b0,b1))
+     else (Receive2(sk,root,b0,b1))))
+     else (Receive2(sk,root,b0,b1)))
+  else (Receive2(sk,root,b0,b1))
+  else (Receive2(sk,root,b0,b1))
+.
+
+process
+ new sk:skey;
+ new root:bitstring;
+ out(net,pk(sk));
+ out(net,root);
+ (Send(pk(sk),root,seq0) | Send(pk(sk),root,seq1) | Receive3(sk,root,no,no))

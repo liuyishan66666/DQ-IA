@@ -6,6 +6,8 @@
 > 本分支另增加了 [Ubuntu 22.04 / Python 3.10 真实密码协议与抗重放测试](experiments/protocol/README.md)。
 > 下文及 `experiments/chapter6/` 的网络仿真不执行真实密码运算；协议原型属于独立实验，安装及运行命令请用上述专门说明，尚不包含形式化安全验证。
 
+> [ProVerif 2.05 形式化验证模型与 Ubuntu 运行说明](experiments/proverif/README.md) 已准备；尚待实际工具日志确认，不把模型预期表当作已完成的验证结果。
+
 ## 实验结果与仓库结构
 
 本仓库包含完整实验代码及约 84 MB 的运行证据，无需 Git LFS。

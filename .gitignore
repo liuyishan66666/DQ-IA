@@ -20,3 +20,4 @@ experiments/protocol/results_*/
 *.db-journal
 *.db-wal
 *.db-shm
+experiments/proverif/results_*/
