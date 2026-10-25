@@ -12,3 +12,11 @@ Thumbs.db
 !.env.example
 experiments/chapter6/results_local*/
 experiments/chapter6/results_rerun*/
+experiments/protocol/results_*/
+.venv-protocol/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

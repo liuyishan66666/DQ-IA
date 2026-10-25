@@ -1,0 +1,38 @@
+test_authenticated_aead_tamper (test_protocol.ProtocolTests) ... ok
+test_authenticated_malformed_kem_implicit_rejection (test_protocol.ProtocolTests) ... ok
+test_bitmap_matches_independent_set_model (test_protocol.ProtocolTests) ... ok
+test_business_callback_exception_rolls_back (test_protocol.ProtocolTests) ... ok
+test_business_failure_does_not_consume_seq (test_protocol.ProtocolTests) ... ok
+test_commit_failure_does_not_return_accept (test_protocol.ProtocolTests) ... ok
+test_database_rejects_different_public_context (test_protocol.ProtocolTests) ... ok
+test_duplicate_is_rejected_before_kem (test_protocol.ProtocolTests) ... ok
+test_epoch_range_validation (test_protocol.ProtocolTests) ... ok
+test_header_fields_reject_before_kem (test_protocol.ProtocolTests) ... ok
+test_hkdf_rfc5869_vector_prefix (test_protocol.ProtocolTests) ... ok
+test_large_jump_resets_bitmap (test_protocol.ProtocolTests) ... ok
+test_oversized_plaintext_does_not_reserve (test_protocol.ProtocolTests) ... ok
+test_parallel_replay_only_one_accept (test_protocol.ProtocolTests) ... ok
+test_pending_write_failure_rolls_back_bitmap (test_protocol.ProtocolTests) ... ok
+test_real_mlkem_encapsulation (test_protocol.ProtocolTests) ... ok
+test_real_roundtrip_and_1208_byte_wire (test_protocol.ProtocolTests) ... ok
+test_reopen_preserves_counter_and_replay (test_protocol.ProtocolTests) ... ok
+test_reservation_failure_does_not_encapsulate (test_protocol.ProtocolTests) ... ok
+test_reserved_sequence_is_not_reused_after_crypto_failure (test_protocol.ProtocolTests) ... ok
+test_root_compromise_allows_forgery_without_private_key (test_protocol.ProtocolTests) ... ok
+test_sender_has_no_probe_private_key (test_protocol.ProtocolTests) ... ok
+test_tampered_r_ct_cipher_and_tag_reject_before_kem (test_protocol.ProtocolTests) ... ok
+test_tampered_seq_does_not_move_window (test_protocol.ProtocolTests) ... ok
+test_truncated_and_extra_bytes (test_protocol.ProtocolTests) ... ok
+test_uint64_last_value_and_no_wrap (test_protocol.ProtocolTests) ... ok
+test_unseen_in_window_out_of_order (test_protocol.ProtocolTests) ... ok
+test_window_lower_boundary_and_one_below (test_protocol.ProtocolTests) ... ok
+test_wrong_context (test_protocol.ProtocolTests) ... ok
+test_wrong_epoch_even_valid_mac_cannot_install_epoch (test_protocol.ProtocolTests) ... ok
+test_wrong_kem_private_key (test_protocol.ProtocolTests) ... ok
+test_wrong_root (test_protocol.ProtocolTests) ... ok
+test_zero_and_max_payload (test_protocol.ProtocolTests) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.088s
+
+OK
