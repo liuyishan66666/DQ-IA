@@ -27,8 +27,9 @@ reduc forall sk: skey, z: coins;
   decap(kemct(pk(sk),z),sk) = kemss(pk(sk),z).
 
 (* Extract/Expand are one-way ideal constructors. No numerical security claim. *)
-fun extract(bitstring,bitstring): bitstring.
-fun expand(bitstring,bitstring): bitstring.
+(* Use prefixed identifiers: "expand" is reserved by the ProVerif grammar. *)
+fun hkdf_extract(bitstring,bitstring): bitstring.
+fun hkdf_expand(bitstring,bitstring): bitstring.
 fun sessionInfo(bitstring,pkey,bitstring,bitstring,bitstring): bitstring.
 fun macInfo(bitstring,bitstring,bitstring): bitstring.
 fun nonce(bitstring,bitstring): bitstring.
@@ -59,8 +60,8 @@ let Send(pub:pkey,root:bitstring,s:bitstring) =
   new r:bitstring;
   let ct = kemct(pub,z) in
   let ss = kemss(pub,z) in
-  let ks = expand(extract(r,ss),sessionInfo(ctx,pub,ct,epoch,s)) in
-  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  let ks = hkdf_expand(hkdf_extract(r,ss),sessionInfo(ctx,pub,ct,epoch,s)) in
+  let km = hkdf_expand(hkdf_extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
   let ciphertext = aenc(secretCommand,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
   let tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) in
   event sent(ctx,epoch,s,secretCommand);
@@ -72,10 +73,10 @@ def auth_body(success, failure):
     return f'''
   in(net,wire:bitstring);
   let (r:bitstring,ct:bitstring,=epoch,s:bitstring,ciphertext:bitstring,tag:bitstring) = wire in
-  let km = expand(extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
+  let km = hkdf_expand(hkdf_extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
   if tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) then
     (let ss = decap(ct,sk) in
-     (let ks = expand(extract(r,ss),sessionInfo(ctx,pk(sk),ct,epoch,s)) in
+     (let ks = hkdf_expand(hkdf_extract(r,ss),sessionInfo(ctx,pk(sk),ct,epoch,s)) in
      (let m = adec(ciphertext,ks,nonce(epoch,s),ad(ctx,epoch,s,r,ct)) in
        ({success})
      else ({failure})))

@@ -95,6 +95,8 @@ def main():
         log = output + ('\nSTDERR:\n'+errors if errors else '')
         log_name = model.stem+'.log'
         (args.output/log_name).write_text(log,encoding='utf-8')
+        tool_error = next((line.strip() for line in log.splitlines()
+                           if 'Error:' in line or 'RUNNER:' in line), None)
         parse_error = None
         try:
             parsed = parse_results(output)
@@ -105,6 +107,7 @@ def main():
             passed = False
         result = {**specification, 'status': 'matched_expectations' if passed else 'needs_investigation',
                   'returncode': returncode, 'timed_out': timed_out, 'parse_error': parse_error,
+                  'tool_error': tool_error,
                   'observed_results': parsed, 'checks': checks, 'log': log_name,
                   'model_sha256': hashlib.sha256(model.read_bytes()).hexdigest()}
         results.append(result)
@@ -113,6 +116,12 @@ def main():
             if line.startswith('RESULT '):print('  '+line,flush=True)
         if not parsed:
             print('  No recognized query result. Read '+str(args.output/log_name),flush=True)
+            # Display the initial diagnostic, so users need not locate a log
+            # just to identify a parser error. Full output remains in the log.
+            for line in log.splitlines()[:12]:
+                print('  '+line,flush=True)
+            if timed_out:
+                print('  Model timed out; no completed conclusion.',flush=True)
     complete = all(r['status']=='matched_expectations' for r in results)
     summary = {'status': 'matched_expectations' if complete else 'needs_investigation',
                'timestamp_utc': datetime.now(timezone.utc).isoformat(),
