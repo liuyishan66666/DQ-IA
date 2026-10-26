@@ -1,5 +1,7 @@
 # ProVerif 2.05 首次有效查询：阶段性解读
 
+> 本页保留 baseline 首轮诊断过程。后续 precise 版本现已完成实际验证及完整日志核对：5 个模型、24 项独立查询均得到确定结果，见 [RESULTS.md](RESULTS.md)。以下“未解决”描述指历史 baseline，未覆盖原记录。
+
 已收到用户上传的完整 Ubuntu 日志包，核对了 5 个模型 SHA-256，并使用修复后的解析器重新读取原始日志；未重新执行 ProVerif。
 模型版本对应修复 `expand` 保留字后的 baseline 版本，所有 baseline 文件及查询保持不变。原始包、原 JSON、重新解析结果和模型快照见 [证据目录](evidence/ubuntu2204-run02/README.md)。
 

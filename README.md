@@ -1,12 +1,12 @@
 # DQ-IA 第六章本机实验
 
 依据 `DQIA_chapter6_revised.pdf` 第 6.1–6.3 节，实现普通电脑可运行的 Python 离散事件仿真。
-网络仿真保留逐束签名 B、DQ-IA C 和纯对称 AEAD D 三组；真实密码原型另作为独立实验，尚未开展形式化安全验证。
+网络仿真保留逐束签名 B、DQ-IA C 和纯对称 AEAD D 三组；真实密码原型与 ProVerif 符号验证作为独立实验，分别保留结果与适用范围。
 
 > 本分支另增加了 [Ubuntu 22.04 / Python 3.10 真实密码协议与抗重放测试](experiments/protocol/README.md)。
-> 下文及 `experiments/chapter6/` 的网络仿真不执行真实密码运算；协议原型属于独立实验，安装及运行命令请用上述专门说明，尚不包含形式化安全验证。
+> 下文及 `experiments/chapter6/` 的网络仿真不执行真实密码运算；协议原型属于独立实验，安装及运行命令请用上述专门说明。
 
-> [ProVerif 2.05 形式化验证模型与 Ubuntu 运行说明](experiments/proverif/README.md) 已提供；[首轮有效查询](experiments/proverif/PROGRESS.md)中部分有限状态单射认证仍无法证明，不能称全部形式化验证通过。
+> [ProVerif 2.05 验证结果](experiments/proverif/RESULTS.md)：用户 Ubuntu 实际运行的 5 个 precise 模型、24 项独立查询均完成并符合预期，完整日志已归档。单射证明限于两序列/三接收尝试的有限模型，不是完整滑动窗口实现证明。
 
 ## 实验结果与仓库结构
 
@@ -137,6 +137,6 @@ python3.12 -m venv .venv
 python -m experiments.chapter6.audit experiments/chapter6/results
 ```
 
-本次工作不包含 ProVerif、实际 BPSec 编码/互操作、密码耗时、星载 RAM/能耗、掉电恢复或真实信道性能验证。
-论文修订稿没有要求 Ubuntu 专属主实验；ProVerif 如后续开展，需另行实现完整模型并保留工具日志。
+网络仿真本身不包含 ProVerif、实际 BPSec 编码/互操作、密码耗时、星载 RAM/能耗、掉电恢复或真实信道性能验证。
+仓库另附 [协议原型实测](experiments/protocol/RESULTS.md) 和 [ProVerif 符号验证](experiments/proverif/RESULTS.md)，分别保留完整记录与范围限制，不将两者解释为真实星载部署验证。
 分支采用 `main` 与 `experiments/chapter6`，首次固定快照标记为 `v0.1.0`。详见 [CONTRIBUTING.md](CONTRIBUTING.md)。

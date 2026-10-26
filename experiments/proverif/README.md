@@ -3,10 +3,10 @@
 本目录提供 DQ-IA 第 5 节的符号模型和运行器，针对用户已有的 ProVerif 2.05。
 它与已经完成的真实密码协议测试、网络仿真分别报告。
 
-**当前状态：用户已在 ProVerif 2.05 得到实际查询结果，但部分有限状态单射查询无法证明，验证尚未全部完成。** 见 [阶段性结果与未解决事项](PROGRESS.md)。
-云环境没有 ProVerif，官方下载请求返回代理 403，无法独立在云端运行。用户 Ubuntu 存在 `/home/liuyishan/.opam/default/bin/proverif`、版本 2.05；下面的预期表不是实测结果。
+**当前状态：用户在 ProVerif 2.05 实际运行 precise 版本，5 个模型、24 项独立查询全部完成并符合事先的预期。** 完整日志和源码摘要已核对，见 [正式结果与论文表述](RESULTS.md)。证明范围仍限定于无界核心及两序列/三接收尝试的有限状态抽象。
+云端没有重新执行 ProVerif；实际执行来自用户 Ubuntu 中的 `/home/liuyishan/.opam/default/bin/proverif`。下面的预期表用于复跑核对，实测结果另见 RESULTS.md。
 
-完整 baseline 日志现已 [归档并核对模型摘要](evidence/ubuntu2204-run02/README.md)。工具建议对输入使用 `[precise]`，因此新增 `--variant precise` 对照；只有输入注解不同，所有安全查询与攻击对照不变。该新版本仍待实际运行，详见阶段性说明中的命令。
+完整 baseline 日志已 [归档](evidence/ubuntu2204-run02/README.md)。按工具建议增加 `[precise]` 输入注解后，用户已完成 [新版本实际运行](evidence/ubuntu2204-precise-run01/README.md)。只有输入注解不同，所有安全查询与攻击对照不变；原始未知结果保留，见 [诊断过程](PROGRESS.md)。
 
 ## 在 Ubuntu 上运行
 
@@ -18,7 +18,7 @@ git status
 git fetch origin
 git switch feat/proverif-validation
 command -v proverif
-python3 -m experiments.proverif.run --output experiments/proverif/results_ubuntu
+python3 -m experiments.proverif.run --variant precise --output experiments/proverif/results_precise_ubuntu_01
 ```
 
 如 Git 因本地修改拒绝切换，应先保存自己的工作，不要强制重置。
@@ -26,25 +26,26 @@ python3 -m experiments.proverif.run --output experiments/proverif/results_ubuntu
 
 ```bash
 python3 -m experiments.proverif.run \
+  --variant precise \
   --proverif /home/liuyishan/.opam/default/bin/proverif \
-  --output experiments/proverif/results_ubuntu
+  --output experiments/proverif/results_precise_ubuntu_01
 ```
 
 依次运行 5 个模型，每个默认超时 180 s。超时不表示性质成立或不成立；应先检查日志，必要时在新目录增加 `--timeout 600`。
-运行器不覆盖非空目录，需要重跑时换用 `--output experiments/proverif/results_ubuntu_02`。
+运行器不覆盖非空目录，需要重跑时换用 `--output experiments/proverif/results_precise_ubuntu_02`。
 运行结束退出码为 0，且 `status` 为 `matched_expectations`，才表示所有模型的已完成查询与预期一致。
 出现语法错误、未知性质、缺失结果、无法证明、非零退出码或超时，均返回 `needs_investigation` 和非零退出码，不能当作验证通过。
 
 ## 将这些记录反馈给协作者
 
-- `results_ubuntu/validation.json`：实际工具版本、模型 SHA-256、逐项观察值、与预期的比较和进程退出状态。
-- `results_ubuntu/tool_version.txt`：实际版本信息。
-- `results_ubuntu/*.log`：5 个模型的完整 stdout/stderr，包含结果行和工具输出的攻击推导/轨迹。
+- 输出目录的 `validation.json`：实际工具版本、模型 SHA-256、逐项观察值、与预期的比较和进程退出状态。
+- `tool_version.txt`：实际版本信息。
+- `*.log`：5 个模型的完整 stdout/stderr，包含结果行和工具输出的攻击推导/轨迹。
 
 可一次打包后作为聊天附件上传：
 
 ```bash
-tar -czf proverif_results_ubuntu.tar.gz -C experiments/proverif results_ubuntu
+tar -czf proverif_results_precise_ubuntu_01.tar.gz -C experiments/proverif results_precise_ubuntu_01
 ```
 
 `validation.json` 是首要核对文件，但应保留全部 `.log` 以区分真实攻击、近似导致的无法证明和语法/执行失败。
@@ -57,7 +58,7 @@ tar -czf proverif_results_ubuntu.tar.gz -C experiments/proverif results_ubuntu
 
 去掉重放状态或泄露密钥的对照，预期应发现对应性质不成立。全部 TRUE 反而可能意味着对照或事件模型有问题。
 
-以下为**待实际运行检验的预期**，不是已经获得的结果：
+以下为**运行前确定的预期**，已与 precise 版本的实测结果逐项核对；此表本身不能代替 [原始日志与实际结果](RESULTS.md)：
 
 |模型|命令秘密性|非单射来源认证|单射认证|正常接受可达|
 |---|---|---|---|---|

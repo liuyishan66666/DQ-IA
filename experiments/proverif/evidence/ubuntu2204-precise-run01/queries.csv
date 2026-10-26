@@ -1,0 +1,25 @@
+model,query,expected,observed,result_line
+bounded_secure.pv,secrecy,True,True,RESULT not attacker(secretCommand[]) is true.
+bounded_secure.pv,authentication,True,True,"RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is true."
+bounded_secure.pv,injective_authentication,True,True,"RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) is true."
+bounded_secure.pv,acceptance_unreachable,False,False,RESULT not event(accepted_any) is false.
+bounded_secure.pv,both_acceptances_unreachable,False,False,RESULT not event(accepted_both) is false.
+bounded_no_replay.pv,secrecy,True,True,RESULT not attacker(secretCommand[]) is true.
+bounded_no_replay.pv,authentication,True,True,"RESULT event(accepted(c,e,s_75,m_73)) ==> event(sent(c,e,s_75,m_73)) is true."
+bounded_no_replay.pv,injective_authentication,False,False,"RESULT inj-event(accepted(c,e,s_75,m_73)) ==> inj-event(sent(c,e,s_75,m_73)) is false."
+bounded_no_replay.pv,acceptance_unreachable,False,False,RESULT not event(accepted_any) is false.
+bounded_no_replay.pv,both_acceptances_unreachable,False,False,RESULT not event(accepted_both) is false.
+bounded_root_leak.pv,secrecy,True,True,RESULT not attacker(secretCommand[]) is true.
+bounded_root_leak.pv,authentication,False,False,"RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is false."
+bounded_root_leak.pv,injective_authentication,False,False,"RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) is false."
+bounded_root_leak.pv,acceptance_unreachable,False,False,RESULT not event(accepted_any) is false.
+bounded_root_leak.pv,both_acceptances_unreachable,False,False,RESULT not event(accepted_both) is false.
+bounded_kem_key_leak.pv,secrecy,False,False,RESULT not attacker(secretCommand[]) is false.
+bounded_kem_key_leak.pv,authentication,True,True,"RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is true."
+bounded_kem_key_leak.pv,injective_authentication,True,True,"RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) is true."
+bounded_kem_key_leak.pv,acceptance_unreachable,False,False,RESULT not event(accepted_any) is false.
+bounded_kem_key_leak.pv,both_acceptances_unreachable,False,False,RESULT not event(accepted_both) is false.
+unbounded_core.pv,secrecy,True,True,RESULT not attacker(secretCommand[]) is true.
+unbounded_core.pv,authentication,True,True,"RESULT event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) is true."
+unbounded_core.pv,injective_authentication,False,False,"RESULT inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1)) is false."
+unbounded_core.pv,acceptance_unreachable,False,False,RESULT not event(accepted_any) is false.

@@ -1,0 +1,312 @@
+Process 0 (that is, the initial process):
+{1}new sk: skey;
+{2}new root: bitstring;
+{3}out(net, pk(sk));
+(
+    {4}!
+    {5}new s: bitstring;
+    {6}let pub: pkey = pk(sk) in
+    {7}let root_1: bitstring = root in
+    {8}let s_1: bitstring = s in
+    {9}new z: coins;
+    {10}new r: bitstring;
+    {11}let ct: bitstring = kemct(pub,z) in
+    {12}let ss: bitstring = kemss(pub,z) in
+    {13}let ks: bitstring = hkdf_expand(hkdf_extract(r,ss),sessionInfo(ctx,pub,ct,epoch,s_1)) in
+    {14}let km: bitstring = hkdf_expand(hkdf_extract(zeroSalt,root_1),macInfo(ctx,epoch,s_1)) in
+    {15}let ciphertext: bitstring = aenc(secretCommand,ks,nonce(epoch,s_1),ad(ctx,epoch,s_1,r,ct)) in
+    {16}let tag: bitstring = mac(km,command(ctx,epoch,s_1,r,ct,ciphertext)) in
+    {17}event sent(ctx,epoch,s_1,secretCommand);
+    {18}out(net, (r,ct,epoch,s_1,ciphertext,tag))
+) | (
+    {19}!
+    {20}let sk_1: skey = sk in
+    {21}let root_2: bitstring = root in
+    {22}in(net, wire: bitstring);
+    {23}let (r_1: bitstring,ct_1: bitstring,=epoch,s_2: bitstring,ciphertext_1: bitstring,tag_1: bitstring) = wire in
+    {24}let km_1: bitstring = hkdf_expand(hkdf_extract(zeroSalt,root_2),macInfo(ctx,epoch,s_2)) in
+    {25}if (tag_1 = mac(km_1,command(ctx,epoch,s_2,r_1,ct_1,ciphertext_1))) then
+    {26}let ss_1: bitstring = decap(ct_1,sk_1) in
+    {27}let ks_1: bitstring = hkdf_expand(hkdf_extract(r_1,ss_1),sessionInfo(ctx,pk(sk_1),ct_1,epoch,s_2)) in
+    {28}let m: bitstring = adec(ciphertext_1,ks_1,nonce(epoch,s_2),ad(ctx,epoch,s_2,r_1,ct_1)) in
+    {29}event accepted(ctx,epoch,s_2,m);
+    {30}event accepted_any
+)
+
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}new sk: skey;
+{2}new root: bitstring;
+{3}out(net, pk(sk));
+(
+    {4}!
+    {5}new s: bitstring;
+    {9}new z: coins;
+    {10}new r: bitstring;
+    {8}let s_1: bitstring = s in
+    {17}event sent(ctx,epoch,s_1,secretCommand);
+    {6}let pub: pkey = pk(sk) in
+    {12}let ss: bitstring = kemss(pub,z) in
+    {11}let ct: bitstring = kemct(pub,z) in
+    {13}let ks: bitstring = hkdf_expand(hkdf_extract(r,ss),sessionInfo(ctx,pub,ct,epoch,s_1)) in
+    {15}let ciphertext: bitstring = aenc(secretCommand,ks,nonce(epoch,s_1),ad(ctx,epoch,s_1,r,ct)) in
+    {7}let root_1: bitstring = root in
+    {14}let km: bitstring = hkdf_expand(hkdf_extract(zeroSalt,root_1),macInfo(ctx,epoch,s_1)) in
+    {16}let tag: bitstring = mac(km,command(ctx,epoch,s_1,r,ct,ciphertext)) in
+    {18}out(net, (r,ct,epoch,s_1,ciphertext,tag))
+) | (
+    {19}!
+    {22}in(net, wire: bitstring);
+    {23}let (r_1: bitstring,ct_1: bitstring,=epoch,s_2: bitstring,ciphertext_1: bitstring,tag_1: bitstring) = wire in
+    {21}let root_2: bitstring = root in
+    {24}let km_1: bitstring = hkdf_expand(hkdf_extract(zeroSalt,root_2),macInfo(ctx,epoch,s_2)) in
+    {25}if (tag_1 = mac(km_1,command(ctx,epoch,s_2,r_1,ct_1,ciphertext_1))) then
+    {20}let sk_1: skey = sk in
+    {26}let ss_1: bitstring = decap(ct_1,sk_1) in
+    {27}let ks_1: bitstring = hkdf_expand(hkdf_extract(r_1,ss_1),sessionInfo(ctx,pk(sk_1),ct_1,epoch,s_2)) in
+    {28}let m: bitstring = adec(ciphertext_1,ks_1,nonce(epoch,s_2),ad(ctx,epoch,s_2,r_1,ct_1)) in
+    {29}event accepted(ctx,epoch,s_2,m);
+    {30}event accepted_any
+)
+
+-- Query not attacker(secretCommand[]) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not attacker(secretCommand[])
+RESULT not attacker(secretCommand[]) is true.
+-- Query event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1))
+goal reachable: b-event(sent(ctx[],epoch[],s_3,secretCommand[])) && b-event(@p_act(@occ22_2,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))))) -> event(accepted(ctx[],epoch[],s_3,secretCommand[]))
+Abbreviations:
+s_3 = s[!1 = @sid]
+@occ22_2 = @occ22_1[!1 = @sid_1]
+r_2 = r[!1 = @sid]
+z_1 = z[!1 = @sid]
+RESULT event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) is true.
+-- Query inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1))
+goal reachable: @sid ≠ @sid_1 && b-event(@p_act(@occ22_3,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))))) && b-inj-event(sent(ctx[],epoch[],s_3,secretCommand[]),@occ17_1) && b-event(@p_act(@occ22_4,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))))) -> inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1) && inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2)
+Abbreviations:
+s_3 = s[!1 = @sid_2]
+r_2 = r[!1 = @sid_2]
+z_1 = z[!1 = @sid_2]
+@occ29_1 = @occ29[wire = (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))),!1 = @sid]
+@occ29_2 = @occ29[wire = (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))),!1 = @sid_1]
+@occ22_3 = @occ22_2[!1 = @sid]
+@occ17_1 = @occ17[!1 = @sid_2]
+@occ22_4 = @occ22_2[!1 = @sid_1]
+
+Derivation:
+Abbreviations:
+s_3 = s[!1 = @sid]
+r_2 = r[!1 = @sid]
+z_1 = z[!1 = @sid]
+@occ29_1 = @occ29[wire = (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))),!1 = @sid_1]
+@occ29_2 = @occ29[wire = (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))),!1 = @sid_2]
+@occ22_3 = @occ22_2[!1 = @sid_1]
+@occ17_1 = @occ17[!1 = @sid]
+@occ22_4 = @occ22_2[!1 = @sid_2]
+
+1. The event sent(ctx[],epoch[],s_3,secretCommand[]) (with occurrence name @occ17_1) may be executed at {17}.
+So the message (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))) may be sent to the attacker at output {18}.
+attacker((r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))).
+
+2. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 6-proj-6-tuple the attacker may obtain mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))).
+attacker(mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+
+3. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 5-proj-6-tuple the attacker may obtain aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))).
+attacker(aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))).
+
+4. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 4-proj-6-tuple the attacker may obtain s_3.
+attacker(s_3).
+
+5. The attacker initially knows epoch[].
+attacker(epoch[]).
+
+6. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 2-proj-6-tuple the attacker may obtain kemct(pk(sk[]),z_1).
+attacker(kemct(pk(sk[]),z_1)).
+
+7. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 1-proj-6-tuple the attacker may obtain r_2.
+attacker(r_2).
+
+8. By 7, the attacker may know r_2.
+By 6, the attacker may know kemct(pk(sk[]),z_1).
+By 5, the attacker may know epoch[].
+By 4, the attacker may know s_3.
+By 3, the attacker may know aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))).
+By 2, the attacker may know mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))).
+Using the function 6-tuple the attacker may obtain (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+attacker((r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))).
+
+9. The event @p_act(@occ22_4,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))) records how variables are instantiated at {22}.
+The message (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))) that the attacker may have by 8 may be received at input {22}.
+So event accepted(ctx[],epoch[],s_3,secretCommand[]) may be executed at {29} in session @sid_2.
+inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2).
+
+10. By 9, inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2).
+The goal is reached, represented in the following fact:
+inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2).
+
+11. The event @p_act(@occ22_3,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))) records how variables are instantiated at {22}.
+The message (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))) that the attacker may have by 8 may be received at input {22}.
+So event accepted(ctx[],epoch[],s_3,secretCommand[]) may be executed at {29} in session @sid_1.
+inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1).
+
+12. By 11, inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1).
+The goal is reached, represented in the following fact:
+inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1).
+
+13. By 12, inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1).
+By 10, inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2).
+We have @occ29_1 ≠ @occ29_2.
+The goals for injectivity are reached, combined in the following fact:
+inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_1) && inj-event(accepted(ctx[],epoch[],s_3,secretCommand[]),@occ29_2).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new sk: skey creating sk_2 at {1}
+
+new root: bitstring creating root_3 at {2}
+
+out(net, ~M) with ~M = pk(sk_2) at {3}
+
+new s: bitstring creating s_4 at {5} in copy a
+
+new z: coins creating z_2 at {9} in copy a
+
+new r: bitstring creating r_3 at {10} in copy a
+
+event sent(ctx,epoch,s_4,secretCommand) at {17} in copy a
+
+out(net, (~M_1,~M_2,~M_3,~M_4,~M_5,~M_6)) with ~M_1 = r_3, ~M_2 = kemct(pk(sk_2),z_2), ~M_3 = epoch, ~M_4 = s_4, ~M_5 = aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))), ~M_6 = mac(hkdf_expand(hkdf_extract(zeroSalt,root_3),macInfo(ctx,epoch,s_4)),command(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2),aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))))) at {18} in copy a
+
+in(net, (~M_1,~M_2,epoch,~M_4,~M_5,~M_6)) with ~M_1 = r_3, ~M_2 = kemct(pk(sk_2),z_2), ~M_4 = s_4, ~M_5 = aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))), ~M_6 = mac(hkdf_expand(hkdf_extract(zeroSalt,root_3),macInfo(ctx,epoch,s_4)),command(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2),aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))))) at {22} in copy a_1
+
+event accepted(ctx,epoch,s_4,secretCommand) at {29} in copy a_1 (goal)
+
+event accepted_any at {30} in copy a_1
+
+in(net, (~M_1,~M_2,epoch,~M_4,~M_5,~M_6)) with ~M_1 = r_3, ~M_2 = kemct(pk(sk_2),z_2), ~M_4 = s_4, ~M_5 = aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))), ~M_6 = mac(hkdf_expand(hkdf_extract(zeroSalt,root_3),macInfo(ctx,epoch,s_4)),command(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2),aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))))) at {22} in copy a_2
+
+event accepted(ctx,epoch,s_4,secretCommand) at {29} in copy a_2 (goal)
+
+The event accepted(ctx,epoch,s_4,secretCommand) is executed at {29} in copy a_1.
+The event accepted(ctx,epoch,s_4,secretCommand) is executed at {29} in copy a_2.
+A trace has been found.
+RESULT inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1)) is false.
+RESULT (but event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) is true.)
+-- Query not event(accepted_any) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not event(accepted_any)
+goal reachable: b-event(@p_act(@occ22_4,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))))) -> event(accepted_any)
+Abbreviations:
+@occ22_4 = @occ22_3[!1 = @sid]
+r_2 = r[!1 = @sid_1]
+z_1 = z[!1 = @sid_1]
+s_3 = s[!1 = @sid_1]
+
+Derivation:
+Abbreviations:
+r_2 = r[!1 = @sid]
+z_1 = z[!1 = @sid]
+s_3 = s[!1 = @sid]
+@occ22_4 = @occ22_3[!1 = @sid_1]
+
+1. The message (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))) may be sent to the attacker at output {18}.
+attacker((r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))).
+
+2. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 6-proj-6-tuple the attacker may obtain mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))).
+attacker(mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+
+3. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 5-proj-6-tuple the attacker may obtain aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))).
+attacker(aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))).
+
+4. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 4-proj-6-tuple the attacker may obtain s_3.
+attacker(s_3).
+
+5. The attacker initially knows epoch[].
+attacker(epoch[]).
+
+6. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 2-proj-6-tuple the attacker may obtain kemct(pk(sk[]),z_1).
+attacker(kemct(pk(sk[]),z_1)).
+
+7. By 1, the attacker may know (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+Using the function 1-proj-6-tuple the attacker may obtain r_2.
+attacker(r_2).
+
+8. By 7, the attacker may know r_2.
+By 6, the attacker may know kemct(pk(sk[]),z_1).
+By 5, the attacker may know epoch[].
+By 4, the attacker may know s_3.
+By 3, the attacker may know aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))).
+By 2, the attacker may know mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))).
+Using the function 6-tuple the attacker may obtain (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))).
+attacker((r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))).
+
+9. The event @p_act(@occ22_4,(r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))))))) records how variables are instantiated at {22}.
+The message (r_2,kemct(pk(sk[]),z_1),epoch[],s_3,aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],s_3)),command(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_2,kemss(pk(sk[]),z_1)),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1),epoch[],s_3)),nonce(epoch[],s_3),ad(ctx[],epoch[],s_3,r_2,kemct(pk(sk[]),z_1)))))) that the attacker may have by 8 may be received at input {22}.
+So event accepted_any may be executed at {30}.
+event(accepted_any).
+
+10. By 9, event(accepted_any).
+The goal is reached, represented in the following fact:
+event(accepted_any).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new sk: skey creating sk_2 at {1}
+
+new root: bitstring creating root_3 at {2}
+
+out(net, ~M) with ~M = pk(sk_2) at {3}
+
+new s: bitstring creating s_4 at {5} in copy a
+
+new z: coins creating z_2 at {9} in copy a
+
+new r: bitstring creating r_3 at {10} in copy a
+
+event sent(ctx,epoch,s_4,secretCommand) at {17} in copy a
+
+out(net, (~M_1,~M_2,~M_3,~M_4,~M_5,~M_6)) with ~M_1 = r_3, ~M_2 = kemct(pk(sk_2),z_2), ~M_3 = epoch, ~M_4 = s_4, ~M_5 = aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))), ~M_6 = mac(hkdf_expand(hkdf_extract(zeroSalt,root_3),macInfo(ctx,epoch,s_4)),command(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2),aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))))) at {18} in copy a
+
+in(net, (~M_1,~M_2,epoch,~M_4,~M_5,~M_6)) with ~M_1 = r_3, ~M_2 = kemct(pk(sk_2),z_2), ~M_4 = s_4, ~M_5 = aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))), ~M_6 = mac(hkdf_expand(hkdf_extract(zeroSalt,root_3),macInfo(ctx,epoch,s_4)),command(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2),aenc(secretCommand,hkdf_expand(hkdf_extract(r_3,kemss(pk(sk_2),z_2)),sessionInfo(ctx,pk(sk_2),kemct(pk(sk_2),z_2),epoch,s_4)),nonce(epoch,s_4),ad(ctx,epoch,s_4,r_3,kemct(pk(sk_2),z_2))))) at {22} in copy a_1
+
+event accepted(ctx,epoch,s_4,secretCommand) at {29} in copy a_1
+
+event accepted_any at {30} in copy a_1 (goal)
+
+The event accepted_any is executed at {30} in copy a_1.
+A trace has been found.
+RESULT not event(accepted_any) is false.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query not attacker(secretCommand[]) is true.
+
+Query event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) is true.
+
+Query inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1)) is false.
+
+Query not event(accepted_any) is false.
+
+--------------------------------------------------------------
+

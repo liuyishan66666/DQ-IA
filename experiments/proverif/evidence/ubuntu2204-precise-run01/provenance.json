@@ -1,0 +1,19 @@
+{
+  "source": "User-uploaded proverif_results_precise_ubuntu_01.tar.gz; no direct VM access",
+  "archive_sha256": "390ff53f3693efc678253055aea4d01babfa86c9e0ab8ec9433351b7e6be8037",
+  "processing": "Original archive and extracted files preserved byte-for-byte; independently reparsed logs, compared all query values and checks; no new ProVerif execution in the cloud",
+  "checks": {
+    "model_sha256_matches_repository": 5,
+    "runner_sha256_matches_repository": true,
+    "manifest_sha256_matches_repository": true,
+    "models_matched_expectations": 5,
+    "independent_queries_completed": 24,
+    "unresolved_queries": 0,
+    "timeouts": 0,
+    "all_tool_returncodes_zero": true,
+    "no_parser_or_tool_errors": true
+  },
+  "model_scope": "4 bounded two-sequence/three-reception models + 1 unbounded cryptographic core without replay state",
+  "baseline_comparison": "For each of 5 models, removing input [precise] annotations yields byte-identical baseline source; security queries and expected values unchanged",
+  "vm_os_release": "Ubuntu 22.04.5 LTS from prior user-provided os-release; current logs record Python 3.10.12, x86_64, Linux 6.8.0-138-generic, glibc 2.35"
+}
