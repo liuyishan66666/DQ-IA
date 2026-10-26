@@ -6,6 +6,8 @@
 **当前状态：用户已在 ProVerif 2.05 得到实际查询结果，但部分有限状态单射查询无法证明，验证尚未全部完成。** 见 [阶段性结果与未解决事项](PROGRESS.md)。
 云环境没有 ProVerif，官方下载请求返回代理 403，无法独立在云端运行。用户 Ubuntu 存在 `/home/liuyishan/.opam/default/bin/proverif`、版本 2.05；下面的预期表不是实测结果。
 
+完整 baseline 日志现已 [归档并核对模型摘要](evidence/ubuntu2204-run02/README.md)。工具建议对输入使用 `[precise]`，因此新增 `--variant precise` 对照；只有输入注解不同，所有安全查询与攻击对照不变。该新版本仍待实际运行，详见阶段性说明中的命令。
+
 ## 在 Ubuntu 上运行
 
 不需要重装 ProVerif，不需要安装 Python 包，也不要改变已有密码库环境。
@@ -97,7 +99,7 @@ Encode 的无歧义性以不同元组/构造函数表示；没有建模具体 CB
 
 ## 可维护性与核对器测试
 
-`.pv` 模型由 `generate.py` 生成，方便一致地维护正向和泄露/重放对照。重新生成不会执行 ProVerif：
+`.pv` 模型由 `generate.py` 生成，分别位于 baseline 的 `models/` 和精确输入对照的 `models_precise/`。默认运行 baseline；`--variant precise` 显式选择后者。重新生成两组模型不会执行 ProVerif：
 
 ```bash
 python3 -m experiments.proverif.generate

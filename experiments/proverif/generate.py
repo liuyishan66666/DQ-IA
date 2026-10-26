@@ -69,9 +69,10 @@ let Send(pub:pkey,root:bitstring,s:bitstring) =
 '''
 
 
-def auth_body(success, failure):
+def auth_body(success, failure, precise=False):
+    input_option = ' [precise]' if precise else ''
     return f'''
-  in(net,wire:bitstring);
+  in(net,wire:bitstring){input_option};
   let (r:bitstring,ct:bitstring,=epoch,s:bitstring,ciphertext:bitstring,tag:bitstring) = wire in
   let km = hkdf_expand(hkdf_extract(zeroSalt,root),macInfo(ctx,epoch,s)) in
   if tag = mac(km,command(ctx,epoch,s,r,ct,ciphertext)) then
@@ -86,7 +87,7 @@ def auth_body(success, failure):
 '''
 
 
-def bounded_receiver(replay_guard):
+def bounded_receiver(replay_guard, precise=False):
     pieces = ['let Receive0(sk:skey,root:bitstring,b0:flag,b1:flag) = 0.\n']
     for attempt in range(1, 4):
         next_name = f'Receive{attempt-1}'
@@ -102,12 +103,12 @@ def bounded_receiver(replay_guard):
         success = (f'if s=seq0 then ({accept0}) '
                    f'else if s=seq1 then ({accept1}) else {unchanged}')
         pieces.append(f'let Receive{attempt}(sk:skey,root:bitstring,b0:flag,b1:flag) =\n'
-                      + auth_body(success, unchanged) + '.\n')
+                      + auth_body(success, unchanged, precise) + '.\n')
     return '\n'.join(pieces)
 
 
-def main():
-    directory = Path(__file__).parent/'models'
+def generate_variant(precise=False):
+    directory = Path(__file__).parent/('models_precise' if precise else 'models')
     directory.mkdir(exist_ok=True)
     scenarios = [
         ('bounded_secure', True, None, True, True, True),
@@ -122,11 +123,11 @@ def main():
                     'injective_authentication': injective, 'acceptance_unreachable': False}
         if guard is None:
             receiver = 'let Receive(sk:skey,root:bitstring) =\n' + auth_body(
-                'event accepted(ctx,epoch,s,m); event accepted_any(); 0', '0') + '.\n'
+                'event accepted(ctx,epoch,s,m); event accepted_any(); 0', '0', precise) + '.\n'
             processes = '(! (new s:bitstring; Send(pk(sk),root,s))) | (! Receive(sk,root))'
             extra_query = ''
         else:
-            receiver = bounded_receiver(guard)
+            receiver = bounded_receiver(guard, precise)
             processes = 'Send(pk(sk),root,seq0) | Send(pk(sk),root,seq1) | Receive3(sk,root,no,no)'
             extra_query = 'query event(accepted_both()).\n'
             expected['both_acceptances_unreachable'] = False
@@ -139,7 +140,12 @@ def main():
                          'scope': 'unbounded sessions, NO replay state' if guard is None
                          else '2 symbolic sequence slots, 3 sequential reception attempts'})
     (directory/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
-    print(f'Generated {len(manifest)} model specifications. No ProVerif execution performed.')
+    return len(manifest)
+
+
+def main():
+    count=generate_variant(False)+generate_variant(True)
+    print(f'Generated {count} model specifications (baseline + precise). No ProVerif execution performed.')
 
 
 if __name__ == '__main__':

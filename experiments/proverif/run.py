@@ -61,6 +61,8 @@ def main():
     parser.add_argument('--proverif', default='proverif', help='Executable name or absolute path')
     parser.add_argument('--output', type=Path, default=Path('experiments/proverif/results_ubuntu'))
     parser.add_argument('--timeout', type=int, default=180, help='Seconds per model')
+    parser.add_argument('--variant', choices=['baseline','precise'], default='baseline',
+                        help='precise adds input annotations recommended by ProVerif; does not change queries')
     args = parser.parse_args()
     executable = shutil.which(args.proverif)
     if not executable:
@@ -70,7 +72,7 @@ def main():
     if args.output.exists() and any(args.output.iterdir()):
         parser.error('Output directory is nonempty. Use a new --output directory.')
     args.output.mkdir(parents=True, exist_ok=True)
-    models = Path(__file__).parent/'models'
+    models = Path(__file__).parent/('models_precise' if args.variant=='precise' else 'models')
     specifications = json.loads((models/'manifest.json').read_text())
     try:
         help_result = subprocess.run([executable,'-help'],capture_output=True,text=True,timeout=10)
@@ -134,7 +136,7 @@ def main():
     summary = {'status': 'matched_expectations' if complete else 'needs_investigation',
                'timestamp_utc': datetime.now(timezone.utc).isoformat(),
                'tool_version': banner, 'python':sys.version, 'platform':platform.platform(),
-               'models_run':len(results), 'models':results,
+               'models_run':len(results), 'models':results, 'variant':args.variant,
                'runner_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                'manifest_sha256':hashlib.sha256((models/'manifest.json').read_bytes()).hexdigest(),
                'interpretation':'Expected FALSE in reachability and attack controls is not a failure. Unknown, missing, timeout or parse failure is unresolved.',

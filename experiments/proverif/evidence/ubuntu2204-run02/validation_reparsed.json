@@ -1,0 +1,350 @@
+{
+  "status": "needs_investigation",
+  "timestamp_utc": "2026-10-25T12:58:07.550266+00:00",
+  "tool_version": "Proverif 2.05. Cryptographic protocol verifier, by Bruno Blanchet, Vincent Cheval, and Marc Sylvestre",
+  "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "models_run": 5,
+  "models": [
+    {
+      "model": "bounded_secure.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": true,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": null,
+      "tool_error": null,
+      "observed_results": {
+        "secrecy": {
+          "observed": true,
+          "tool_result": "RESULT not attacker(secretCommand[]) is true."
+        },
+        "authentication": {
+          "observed": true,
+          "tool_result": "RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is true."
+        },
+        "injective_authentication": {
+          "observed": null,
+          "tool_result": "RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) cannot be proved."
+        },
+        "acceptance_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_any) is false."
+        },
+        "both_acceptances_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_both) is false."
+        }
+      },
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "authentication": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "injective_authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        }
+      },
+      "log": "bounded_secure.log",
+      "model_sha256": "edf17860c699001b83dd17b714991bfb67a3d8895c57c35081e90ca7a3cc1715",
+      "log_sha256": "26bba25fbf6f829c261c52e3c47a945cce99cf34f25df5b5c469618084b4fb2f"
+    },
+    {
+      "model": "bounded_no_replay.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": false,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": null,
+      "tool_error": null,
+      "observed_results": {
+        "secrecy": {
+          "observed": true,
+          "tool_result": "RESULT not attacker(secretCommand[]) is true."
+        },
+        "authentication": {
+          "observed": true,
+          "tool_result": "RESULT event(accepted(c,e,s_75,m_73)) ==> event(sent(c,e,s_75,m_73)) is true."
+        },
+        "injective_authentication": {
+          "observed": null,
+          "tool_result": "RESULT inj-event(accepted(c,e,s_75,m_73)) ==> inj-event(sent(c,e,s_75,m_73)) cannot be proved."
+        },
+        "acceptance_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_any) is false."
+        },
+        "both_acceptances_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_both) is false."
+        }
+      },
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "authentication": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        }
+      },
+      "log": "bounded_no_replay.log",
+      "model_sha256": "0bd4719178a46bd84b78a7a0a451134db9b26e17752815c864d7c5cf24511e51",
+      "log_sha256": "0f85518e3cd7ba5b058bea3d2de6703fe6d307d32cc4571e8bdce5ef6428c047"
+    },
+    {
+      "model": "bounded_root_leak.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": false,
+        "injective_authentication": false,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "matched_expectations",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": null,
+      "tool_error": null,
+      "observed_results": {
+        "secrecy": {
+          "observed": true,
+          "tool_result": "RESULT not attacker(secretCommand[]) is true."
+        },
+        "authentication": {
+          "observed": false,
+          "tool_result": "RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is false."
+        },
+        "injective_authentication": {
+          "observed": false,
+          "tool_result": "RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) is false."
+        },
+        "acceptance_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_any) is false."
+        },
+        "both_acceptances_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_both) is false."
+        }
+      },
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "authentication": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        }
+      },
+      "log": "bounded_root_leak.log",
+      "model_sha256": "22b91f44105469ce2eb5d938ffa057e3dbcc07dd5d452f68934df871c0b4773a",
+      "log_sha256": "f493b5138b6a99ada88104d5e81545ae76ca9bb5da8500f1027edfac116b0a7c"
+    },
+    {
+      "model": "bounded_kem_key_leak.pv",
+      "expected": {
+        "secrecy": false,
+        "authentication": true,
+        "injective_authentication": true,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": null,
+      "tool_error": null,
+      "observed_results": {
+        "secrecy": {
+          "observed": false,
+          "tool_result": "RESULT not attacker(secretCommand[]) is false."
+        },
+        "authentication": {
+          "observed": true,
+          "tool_result": "RESULT event(accepted(c,e,s_113,m_111)) ==> event(sent(c,e,s_113,m_111)) is true."
+        },
+        "injective_authentication": {
+          "observed": null,
+          "tool_result": "RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) cannot be proved."
+        },
+        "acceptance_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_any) is false."
+        },
+        "both_acceptances_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_both) is false."
+        }
+      },
+      "checks": {
+        "secrecy": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "authentication": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "injective_authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        }
+      },
+      "log": "bounded_kem_key_leak.log",
+      "model_sha256": "262e8a7d58e72b3a28a698eaccaf58a3760b5d1b4e82e4ea5d25887fd4d9d938",
+      "log_sha256": "90ff2af656acb2d9c0cb14c0e350b95532b287779e03b69322394532f09e06b4"
+    },
+    {
+      "model": "unbounded_core.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": false,
+        "acceptance_unreachable": false
+      },
+      "scope": "unbounded sessions, NO replay state",
+      "status": "matched_expectations",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": null,
+      "tool_error": null,
+      "observed_results": {
+        "secrecy": {
+          "observed": true,
+          "tool_result": "RESULT not attacker(secretCommand[]) is true."
+        },
+        "authentication": {
+          "observed": true,
+          "tool_result": "RESULT event(accepted(c,e,s_3,m_1)) ==> event(sent(c,e,s_3,m_1)) is true."
+        },
+        "injective_authentication": {
+          "observed": false,
+          "tool_result": "RESULT inj-event(accepted(c,e,s_3,m_1)) ==> inj-event(sent(c,e,s_3,m_1)) is false."
+        },
+        "acceptance_unreachable": {
+          "observed": false,
+          "tool_result": "RESULT not event(accepted_any) is false."
+        }
+      },
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "authentication": {
+          "expected": true,
+          "observed": true,
+          "matches": true
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": false,
+          "matches": true
+        }
+      },
+      "log": "unbounded_core.log",
+      "model_sha256": "b66be0aa64722f6a4681277f5861e1f1f92f6080fe8a3d506497461a6135fe4b",
+      "log_sha256": "be8634a6f2cf48769295200dcf8b5f5804cf2ed7fee91053881d677b09cd7d54"
+    }
+  ],
+  "runner_sha256": "de672621feed791317ce369431798766d3279c270787be8c8708d91866470aff",
+  "manifest_sha256": "4e039a057b8f752e346567f69c4336b5b27abce737a5c10d0aeb747b14a67f37",
+  "interpretation": "Expected FALSE in reachability and attack controls is not a failure. Unknown, missing, timeout or parse failure is unresolved.",
+  "scope": "Unbounded cryptographic core + bounded 2-slot/3-attempt replay model; not a proof of the complete 64-bit implementation.",
+  "operation": "reparse_saved_logs",
+  "proverif_executed_by_reparser": false,
+  "reparsed_at_utc": "2026-10-26T08:22:27.582070+00:00",
+  "source_validation_sha256": "c2487072cc1d51884a38f0220f1f3ac224435d130f989f3e1cff3f1eea79f8ea",
+  "reparser_sha256": "569be9300590421736f816a99cf481d2be7b50a03fb4f8a477e5b5c4bb8492c8",
+  "parser_sha256": "38b32309481af3795fbe84261d13be3d02bad680462de09885b7b61bb6d9b438"
+}

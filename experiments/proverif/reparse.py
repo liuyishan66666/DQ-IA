@@ -21,7 +21,10 @@ def main():
     try:
         original_bytes=(source/'validation.json').read_bytes()
         original=json.loads(original_bytes)
-        model_root=Path(__file__).parent/'models'
+        variant=original.get('variant','baseline')
+        if variant not in ['baseline','precise']:
+            raise ValueError('Unknown model variant')
+        model_root=Path(__file__).parent/('models_precise' if variant=='precise' else 'models')
         specs=json.loads((model_root/'manifest.json').read_text())
         records={record['model']:record for record in original['models']}
         if set(records)!={spec['model'] for spec in specs}:

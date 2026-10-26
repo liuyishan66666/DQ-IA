@@ -1,0 +1,238 @@
+{
+  "status": "needs_investigation",
+  "timestamp_utc": "2026-10-25T12:58:07.550266+00:00",
+  "tool_version": "Proverif 2.05. Cryptographic protocol verifier, by Bruno Blanchet, Vincent Cheval, and Marc Sylvestre",
+  "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "models_run": 5,
+  "models": [
+    {
+      "model": "bounded_secure.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": true,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": "Conflicting results for authentication",
+      "tool_error": null,
+      "observed_results": {},
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "injective_authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        }
+      },
+      "log": "bounded_secure.log",
+      "model_sha256": "edf17860c699001b83dd17b714991bfb67a3d8895c57c35081e90ca7a3cc1715"
+    },
+    {
+      "model": "bounded_no_replay.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": false,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": "Conflicting results for authentication",
+      "tool_error": null,
+      "observed_results": {},
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        }
+      },
+      "log": "bounded_no_replay.log",
+      "model_sha256": "0bd4719178a46bd84b78a7a0a451134db9b26e17752815c864d7c5cf24511e51"
+    },
+    {
+      "model": "bounded_root_leak.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": false,
+        "injective_authentication": false,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": "Conflicting results for authentication",
+      "tool_error": null,
+      "observed_results": {},
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "authentication": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        }
+      },
+      "log": "bounded_root_leak.log",
+      "model_sha256": "22b91f44105469ce2eb5d938ffa057e3dbcc07dd5d452f68934df871c0b4773a"
+    },
+    {
+      "model": "bounded_kem_key_leak.pv",
+      "expected": {
+        "secrecy": false,
+        "authentication": true,
+        "injective_authentication": true,
+        "acceptance_unreachable": false,
+        "both_acceptances_unreachable": false
+      },
+      "scope": "2 symbolic sequence slots, 3 sequential reception attempts",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": "Conflicting results for authentication",
+      "tool_error": null,
+      "observed_results": {},
+      "checks": {
+        "secrecy": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "injective_authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "both_acceptances_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        }
+      },
+      "log": "bounded_kem_key_leak.log",
+      "model_sha256": "262e8a7d58e72b3a28a698eaccaf58a3760b5d1b4e82e4ea5d25887fd4d9d938"
+    },
+    {
+      "model": "unbounded_core.pv",
+      "expected": {
+        "secrecy": true,
+        "authentication": true,
+        "injective_authentication": false,
+        "acceptance_unreachable": false
+      },
+      "scope": "unbounded sessions, NO replay state",
+      "status": "needs_investigation",
+      "returncode": 0,
+      "timed_out": false,
+      "parse_error": "Conflicting results for authentication",
+      "tool_error": null,
+      "observed_results": {},
+      "checks": {
+        "secrecy": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "authentication": {
+          "expected": true,
+          "observed": null,
+          "matches": false
+        },
+        "injective_authentication": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        },
+        "acceptance_unreachable": {
+          "expected": false,
+          "observed": null,
+          "matches": false
+        }
+      },
+      "log": "unbounded_core.log",
+      "model_sha256": "b66be0aa64722f6a4681277f5861e1f1f92f6080fe8a3d506497461a6135fe4b"
+    }
+  ],
+  "runner_sha256": "de672621feed791317ce369431798766d3279c270787be8c8708d91866470aff",
+  "manifest_sha256": "4e039a057b8f752e346567f69c4336b5b27abce737a5c10d0aeb747b14a67f37",
+  "interpretation": "Expected FALSE in reachability and attack controls is not a failure. Unknown, missing, timeout or parse failure is unresolved.",
+  "scope": "Unbounded cryptographic core + bounded 2-slot/3-attempt replay model; not a proof of the complete 64-bit implementation."
+}

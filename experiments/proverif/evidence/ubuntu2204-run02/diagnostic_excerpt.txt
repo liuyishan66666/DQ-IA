@@ -1,0 +1,15 @@
+=== bounded_secure.log ===
+7158: Unification of attacker((r_114,ct_114,epoch[],s_114,ciphertext_114,tag_114)) and attacker((r_1[],kemct(pk(sk[]),z_1[]),epoch[],seq1[],aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],seq1[])),command(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))))))) failed or made a constraint become false at the input at occurrence {2334}
+7159: Try adding a [precise] option on it.
+7161: Could not find a trace corresponding to this derivation.
+7162: RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) cannot be proved.
+=== bounded_no_replay.log ===
+4483: Unification of attacker((r_76,ct_76,epoch[],s_76,ciphertext_76,tag_76)) and attacker((r_1[],kemct(pk(sk[]),z_1[]),epoch[],seq1[],aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],seq1[])),command(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))))))) failed or made a constraint become false at the input at occurrence {1378}
+4484: Try adding a [precise] option on it.
+4486: Could not find a trace corresponding to this derivation.
+4487: RESULT inj-event(accepted(c,e,s_75,m_73)) ==> inj-event(sent(c,e,s_75,m_73)) cannot be proved.
+=== bounded_kem_key_leak.log ===
+7294: Unification of attacker((r_114,ct_114,epoch[],s_114,ciphertext_114,tag_114)) and attacker((r_1[],kemct(pk(sk[]),z_1[]),epoch[],seq1[],aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))),mac(hkdf_expand(hkdf_extract(zeroSalt[],root[]),macInfo(ctx[],epoch[],seq1[])),command(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]),aenc(secretCommand[],hkdf_expand(hkdf_extract(r_1[],kemss(pk(sk[]),z_1[])),sessionInfo(ctx[],pk(sk[]),kemct(pk(sk[]),z_1[]),epoch[],seq1[])),nonce(epoch[],seq1[]),ad(ctx[],epoch[],seq1[],r_1[],kemct(pk(sk[]),z_1[]))))))) failed or made a constraint become false at the input at occurrence {2335}
+7295: Try adding a [precise] option on it.
+7297: Could not find a trace corresponding to this derivation.
+7298: RESULT inj-event(accepted(c,e,s_113,m_111)) ==> inj-event(sent(c,e,s_113,m_111)) cannot be proved.

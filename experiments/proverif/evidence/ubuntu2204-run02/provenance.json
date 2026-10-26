@@ -1,0 +1,16 @@
+{
+  "source": "User uploaded proverif_results_ubuntu_02.tar.gz; no direct VM access",
+  "archive_sha256": "7771b9780791a4caaa344e9e922971a05651fa37bbce968170e1292e0bde96c4",
+  "processing": "Preserved archive and original validation.json byte-for-byte; reparsed actual logs with corrected parser; no ProVerif re-execution",
+  "model_hashes_verified": 5,
+  "matched_models_after_reparse": 2,
+  "unresolved_models_after_reparse": 3,
+  "diagnosis": "Candidate injectivity derivations could not be reconstructed as execution traces; tool recommends [precise] at the implicated input",
+  "bounded_secure_diagnostic_lines": [
+    7158,
+    7159,
+    7161,
+    7162
+  ],
+  "scope": "Baseline two-slot/three-reception bounded state model; incomplete injective proof. No claim of a confirmed replay attack in the guarded model."
+}
